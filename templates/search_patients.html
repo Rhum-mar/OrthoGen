@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search_patients
+{% endblock %}
+
+{% block main %}
+
+<style>
+    #patient-list {
+        list-style-type: none; /* Remove default bullet point */
+        padding: 0; /* Remove default padding */
+
+    }
+    #patient-list li {
+        display: flex; /* Use flexbox for layout */
+        align-items: center; /* Align items vertically */
+        margin-bottom: 5px; /* Add some spacing between items */
+
+    }
+    #patient-list li button {
+        align-items: center; /* Move the button to the right */
+        margin-left:20px;
+    }
+</style>
+
+<form action="/search_patients" method="get">
+    <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="query" placeholder="Patient" type="text">
+        <ul id="patient-list">
+            {% for patient in patients %}
+            <li>
+                {{ patient.nom }}, {{ patient.prenom }}
+                  <button class="btn btn-primary" type="submit" value="{{patient.id}}">OK</button>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- List of patients will be dynamically added here -->
+    </div>
+</form>
+
+
+        <!--tbody>
+            {% for item in portfolio %}
+            <tr>
+                <td class="text-start">{{ item.symbol }}</td>
+                <td class="text-end">{{ item.quantity }}</td>
+                <td class="text-end">{{ item.price }}</td>
+                <td class="text-end">{{ item.total_value }}</td>
+            </tr>
+
+            {% endfor %}
+            <tr>
+                <th class="text-start">TOTAL SHARES VALUE</th>
+                <td class="text-start">{{total_shares_value}}</td>
+            </tr>
+            <tr>
+                <th class="text-start">TOTAL CASH</th>
+                <td class="text-start">{{total_cash}}</td>
+            </tr>
+            <tr>
+                <th class="text-start">TOTAL </th>
+                <td class="text-start">{{general_total}}</td>
+            </tr>
+        </tbody-->
+
+{% endblock %}
+

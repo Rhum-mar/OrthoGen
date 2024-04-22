@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search
+{% endblock %}
+
+{% block main %}
+
+<form action="/generate_list" method="post">
+    <div id="searchRows">
+        <div class="row mb-3 searchRow">
+            <div class="col-md-4">
+                <label for="selected_option" class="form-label">Critere:</label>
+                <select name="selected_option" class="form-select">
+                    <option disabled selected>Select critere</option>
+                    {% for option in options %}
+                    <option value="{{ option }}">{{ option }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="value_options" class="form-label">Valeur:</label>
+                <select name="value_options" class="form-select">
+                    <option disabled selected>Select valeur</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="btn btn-danger deleteRow">-</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="col-md-4">
+            <button type="button" id="addSearchRow" class="btn btn-secondary">+</button>
+        </div>
+        <label for="words_number" class="form-label">Nombre de mots:</label>
+        <input type="number" name="words_number" class="form-control" placeholder="nombre de mots">
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">Generer Liste</button>
+        </div>
+    </div>
+</form>
+
+<div>
+    <ul>
+        {% for word in words %}
+        <li>{{ word }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+
+<script>
+    document.getElementById("addSearchRow").addEventListener("click", function() {
+        var searchRow = document.querySelector('.searchRow').cloneNode(true);
+        document.getElementById("searchRows").appendChild(searchRow);
+    });
+
+    document.addEventListener("click", function(event) {
+        if (event.target && event.target.classList.contains("deleteRow")) {
+            event.target.closest('.searchRow').remove();
+        }
+    });
+</script>
+
+<script>
+    // Function to update value options based on selected criterion
+    document.addEventListener("change", function(event) {
+        if (event.target && event.target.matches("select[name='selected_option']")) {
+            var selectedOption = event.target.value;
+            var valueOptionsDropdown = event.target.parentElement.nextElementSibling.querySelector("select[name='value_options']");
+            fetch(`/get_value_options?criterion=${selectedOption}`)
+                .then(response => response.json())
+                .then(data => {
+                    valueOptionsDropdown.innerHTML = ""; // Clear previous options
+                    data.forEach(function(value) {
+                        var option = document.createElement("option");
+                        option.value = value[selectedOption]; // Assuming the column name is the same as the criterion
+                        option.textContent = value[selectedOption];
+                        valueOptionsDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error fetching value options:", error));
+        }
+    });
+</script>
+
+{% endblock %}
