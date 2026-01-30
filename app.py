@@ -70,7 +70,7 @@ def generate_list():
         base_query += f" LIMIT {words_number}"
 
     # Execute the SQL query
-    words_list = db.execute(base_query, query_params)
+    words_list = db.execute(base_query, *query_params)
     words = [row['mot'] for row in words_list]
 
     options = get_options()
